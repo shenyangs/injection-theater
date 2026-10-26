@@ -1,35 +1,67 @@
 {
   "project": "injection-theater",
   "state": "PARTIAL",
-  "scenario": "Same synthetic meeting note, naive vs boundary-aware system prompts; labelled fixture outputs with real independent judging and exact trace export.",
+  "scenario": "中文默认的双栏无害提示词注入实验；共享合成会议文档，人工样例输出、真实独立判定、完整轨迹导出。",
   "checks": [
     {
-      "id": "typescript-and-production-build",
+      "id": "中文生产构建",
       "passed": true,
       "evidence": "artifacts/build.log"
     },
     {
-      "id": "9-unit-tests-including-network-boundary",
+      "id": "10项单元测试含缺依赖诊断",
       "passed": true,
       "evidence": "artifacts/test.log"
     },
     {
-      "id": "4-browser-tests-real-fixture-api",
+      "id": "6项中文浏览器测试含小屏键盘与重试",
       "passed": true,
       "evidence": "artifacts/e2e.log"
     },
     {
-      "id": "recorded-demo-and-trace-export",
+      "id": "中文真实录屏演示",
       "passed": true,
       "evidence": "artifacts/demo.log"
     },
     {
-      "id": "real-model-inference",
+      "id": "现有环境setup安装与浏览器复用",
+      "passed": true,
+      "evidence": "artifacts/setup-zh.log"
+    },
+    {
+      "id": "正常环境doctor",
+      "passed": true,
+      "evidence": "artifacts/doctor.log"
+    },
+    {
+      "id": "缺依赖doctor中文失败说明",
+      "passed": true,
+      "evidence": "artifacts/doctor-missing-deps.log"
+    },
+    {
+      "id": "锁文件一致",
+      "passed": true,
+      "evidence": "artifacts/lock-check.log"
+    },
+    {
+      "id": "真实模型推理",
       "passed": false,
-      "evidence": "Not run; no credentials accessed or supplied. Live transport covered only with explicit mocks."
+      "evidence": "未执行；未读取或提供真实凭据，模型网络测试为显式mock。"
     }
   ],
   "commands": [
+    {
+      "cmd": "npm run setup（设置 PLAYWRIGHT_CHROMIUM_EXECUTABLE 复用已有浏览器）",
+      "exitCode": 0
+    },
+    {
+      "cmd": "npm run doctor（同上浏览器变量）",
+      "exitCode": 0
+    },
+    {
+      "cmd": "npm run doctor -- --deps-dir artifacts/nonexistent-dependency-directory（预期诊断失败）",
+      "exitCode": 1
+    },
     {
       "cmd": "npm run build",
       "exitCode": 0
@@ -39,19 +71,15 @@
       "exitCode": 0
     },
     {
-      "cmd": "npm run e2e (initial; required browser absent)",
+      "cmd": "npm run e2e（中文首次，展开后按钮改名导致测试定位失败）",
       "exitCode": 1
     },
     {
-      "cmd": "npm run e2e (second; required FFmpeg absent)",
-      "exitCode": 1
-    },
-    {
-      "cmd": "npm run e2e (PLAYWRIGHT_CHROMIUM_EXECUTABLE points to existing Chromium)",
+      "cmd": "npm run e2e（修正定位，设置已有 Chromium 路径）",
       "exitCode": 0
     },
     {
-      "cmd": "npm run demo (PLAYWRIGHT_CHROMIUM_EXECUTABLE points to existing Chromium)",
+      "cmd": "npm run demo（设置已有 Chromium 路径）",
       "exitCode": 0
     }
   ],
@@ -59,9 +87,11 @@
   "fixturesUsed": true,
   "demoVideo": "artifacts/playwright/demo/demo-three-click-local-inj-8d932-ith-inspectable-exact-trace/video.webm",
   "limitations": [
-    "Live provider inference unverified; fixture responses are hand-authored and not evidence of defense efficacy.",
-    "Single synthetic document; exact marker and format checks do not evaluate semantic task correctness.",
-    "Browser download was interrupted after no progress. Final browser validation reused existing Chromium via environment override; matching FFmpeg downloaded locally.",
-    "No trace import or deterministic model replay; exported JSON preserves exact observed fixture outputs and prompts."
+    "未验证真实模型推理；人工样例差异不能证明防御有效。",
+    "只验证单份合成笔记，格式检查不衡量语义质量。",
+    "本次 Node.js 26.4.0 / macOS 验证；Windows、Linux 与最低支持 Node 22.13 未实机验证。",
+    "setup 已在现有环境实际运行；复用现有 Chromium，仅检查已有项目 FFmpeg，未重复下载大浏览器。完整新机器安装/下载未验证。",
+    "初版缺浏览器与FFmpeg的失败日志仍保留；中文首轮定位失败记录在 artifacts/e2e-zh-first-attempt.log，修正后6项通过。",
+    "轨迹支持导出复查，不支持导入或确定性模型重放。"
   ]
 }

@@ -16,6 +16,7 @@ test('中文小屏引导与键盘运行不会横向溢出',async({page})=>{
  await page.setViewportSize({width:390,height:844});await page.goto('/');
  await expect(page.locator('html')).toHaveAttribute('lang','zh-CN');
  await expect(page.getByRole('list',{name:'首次使用三步引导'})).toBeVisible();
+ await page.getByRole('button',{name:'收起输入'}).click();
  const input=page.getByRole('button',{name:'查看含注入指令的笔记'});await input.focus();await page.keyboard.press('Enter');await expect(page.getByRole('button',{name:'收起输入'})).toHaveAttribute('aria-expanded','true');
  const run=page.getByRole('button',{name:'运行一次无害注入实验'});await run.focus();await page.keyboard.press('Enter');await expect(page.getByText('部分完成（PARTIAL）· 样例模拟')).toBeVisible();
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)).toBe(true);

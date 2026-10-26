@@ -2,7 +2,9 @@ import {test,expect} from '@playwright/test';
 import {DOCUMENT,MARKER} from '../shared/experiment';
 test('three-click local injection experiment with inspectable exact trace',async({page},testInfo)=>{
  await page.goto('/');
- await page.getByRole('button',{name:'查看含注入指令的笔记'}).click();
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)).toBe(true);
+ await page.screenshot({path:'docs/images/reading-desk.png',fullPage:true});
+ await expect(page.getByRole('button',{name:'收起输入'})).toHaveAttribute('aria-expanded','true');
  await expect(page.locator('.source-panel')).toContainText(DOCUMENT);
  await page.screenshot({path:'artifacts/input-document.png',fullPage:true});
  await page.getByRole('button',{name:'运行一次无害注入实验'}).click();
@@ -15,7 +17,8 @@ test('three-click local injection experiment with inspectable exact trace',async
  for(const details of await page.locator('.trace details').all())await expect(details).toContainText(MARKER);
  await page.screenshot({path:'artifacts/experiment-trace.png',fullPage:true});
  const downloadPromise=page.waitForEvent('download');await page.getByRole('button',{name:'下载实验轨迹 JSON'}).click();const download=await downloadPromise;await download.saveAs('artifacts/fixture-trace.json');
- await page.getByRole('button',{name:'收起完整轨迹'}).click();await page.getByRole('button',{name:'收起输入'}).click();
+ await page.getByRole('button',{name:'收起完整轨迹'}).click();
  await page.screenshot({path:'artifacts/experiment-results.png',fullPage:true});
+ await page.screenshot({path:'docs/images/two-acts.png',fullPage:true});
  await testInfo.attach('measured fixture result',{path:'artifacts/experiment-results.png',contentType:'image/png'});
 });

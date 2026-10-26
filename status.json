@@ -1,27 +1,27 @@
 {
   "project": "injection-theater",
   "state": "PARTIAL",
-  "scenario": "中文默认的双栏无害提示词注入实验；共享合成会议文档，人工样例输出、真实独立判定、完整轨迹导出。",
+  "scenario": "纸色剧本阅读台：默认展开的批注原文、两幕结果与可展开轨迹；人工样例输出，真实独立判定。",
   "checks": [
     {
       "id": "中文生产构建",
       "passed": true,
-      "evidence": "artifacts/build-node-range.log"
+      "evidence": "artifacts/build-redesign.log"
     },
     {
       "id": "31项单元测试含Node边界及入口拒绝",
       "passed": true,
-      "evidence": "artifacts/test-node-range.log"
+      "evidence": "artifacts/test-redesign.log"
     },
     {
       "id": "6项中文浏览器测试含小屏键盘与重试",
       "passed": true,
-      "evidence": "artifacts/e2e.log"
+      "evidence": "artifacts/e2e-redesign.log"
     },
     {
       "id": "中文真实录屏演示",
       "passed": true,
-      "evidence": "artifacts/demo.log"
+      "evidence": "artifacts/demo-redesign.log"
     },
     {
       "id": "现有环境setup安装与浏览器复用",
@@ -31,7 +31,7 @@
     {
       "id": "正常环境doctor",
       "passed": true,
-      "evidence": "artifacts/doctor.log"
+      "evidence": "artifacts/doctor-redesign.log"
     },
     {
       "id": "缺依赖doctor中文失败说明",
@@ -47,6 +47,11 @@
       "id": "真实模型推理",
       "passed": false,
       "evidence": "未执行；未读取或提供真实凭据，模型网络测试为显式mock。"
+    },
+    {
+      "id": "纸色阅读台真实截图与默认原文展示",
+      "passed": true,
+      "evidence": "docs/images/reading-desk.png; docs/images/two-acts.png; artifacts/mobile-zh.png"
     }
   ],
   "commands": [
@@ -89,6 +94,26 @@
     {
       "cmd": "npm run test（Node范围修复后，31项）",
       "exitCode": 0
+    },
+    {
+      "cmd": "npm run doctor（阅读台重设计；浏览器命令复用已有 Chromium）",
+      "exitCode": 0
+    },
+    {
+      "cmd": "npm run build（阅读台重设计；浏览器命令复用已有 Chromium）",
+      "exitCode": 0
+    },
+    {
+      "cmd": "npm run test（阅读台重设计；浏览器命令复用已有 Chromium）",
+      "exitCode": 0
+    },
+    {
+      "cmd": "npm run e2e（阅读台重设计；浏览器命令复用已有 Chromium）",
+      "exitCode": 0
+    },
+    {
+      "cmd": "npm run demo（阅读台重设计；浏览器命令复用已有 Chromium）",
+      "exitCode": 0
     }
   ],
   "liveModel": false,
@@ -101,6 +126,6 @@
     "setup 已在现有环境实际运行；复用现有 Chromium，仅检查已有项目 FFmpeg，未重复下载大浏览器。完整新机器安装/下载未验证。",
     "初版缺浏览器与FFmpeg的失败日志仍保留；中文首轮定位失败记录在 artifacts/e2e-zh-first-attempt.log，修正后6项通过。",
     "轨迹支持导出复查，不支持导入或确定性模型重放。",
-    "Node范围修复后重跑build/test；E2E/demo沿用此前已通过的中文版本证据，由主对话独立复验。版本边界使用函数测试与进程版本模拟，不代表多Node版本实机验证。"
+    "本轮阅读台重设计已重跑 doctor/build/test/e2e/demo；1440×900 和390px视口通过，截图为完整页面。"
   ]
 }

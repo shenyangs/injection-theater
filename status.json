@@ -6,12 +6,12 @@
     {
       "id": "中文生产构建",
       "passed": true,
-      "evidence": "artifacts/build.log"
+      "evidence": "artifacts/build-node-range.log"
     },
     {
-      "id": "10项单元测试含缺依赖诊断",
+      "id": "31项单元测试含Node边界及入口拒绝",
       "passed": true,
-      "evidence": "artifacts/test.log"
+      "evidence": "artifacts/test-node-range.log"
     },
     {
       "id": "6项中文浏览器测试含小屏键盘与重试",
@@ -81,6 +81,14 @@
     {
       "cmd": "npm run demo（设置已有 Chromium 路径）",
       "exitCode": 0
+    },
+    {
+      "cmd": "npm run build（Node范围修复后）",
+      "exitCode": 0
+    },
+    {
+      "cmd": "npm run test（Node范围修复后，31项）",
+      "exitCode": 0
     }
   ],
   "liveModel": false,
@@ -89,9 +97,10 @@
   "limitations": [
     "未验证真实模型推理；人工样例差异不能证明防御有效。",
     "只验证单份合成笔记，格式检查不衡量语义质量。",
-    "本次 Node.js 26.4.0 / macOS 验证；Windows、Linux 与最低支持 Node 22.13 未实机验证。",
+    "本次 Node.js 26.4.0 / macOS 验证；Windows、Linux 与最低支持 Node 22.12 未实机验证。",
     "setup 已在现有环境实际运行；复用现有 Chromium，仅检查已有项目 FFmpeg，未重复下载大浏览器。完整新机器安装/下载未验证。",
     "初版缺浏览器与FFmpeg的失败日志仍保留；中文首轮定位失败记录在 artifacts/e2e-zh-first-attempt.log，修正后6项通过。",
-    "轨迹支持导出复查，不支持导入或确定性模型重放。"
+    "轨迹支持导出复查，不支持导入或确定性模型重放。",
+    "Node范围修复后重跑build/test；E2E/demo沿用此前已通过的中文版本证据，由主对话独立复验。版本边界使用函数测试与进程版本模拟，不代表多Node版本实机验证。"
   ]
 }

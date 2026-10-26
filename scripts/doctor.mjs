@@ -2,13 +2,13 @@ import {existsSync,readFileSync} from 'node:fs';
 import {resolve,dirname} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import net from 'node:net';
+import {isSupportedNode, NODE_REQUIREMENT} from './node-version.mjs';
 const root=resolve(dirname(fileURLToPath(import.meta.url)),'..');
 const dependencyIndex=process.argv.indexOf('--deps-dir');
 const deps=dependencyIndex>=0?resolve(process.argv[dependencyIndex+1] || '__missing_dependencies__'):resolve(root,'node_modules');
 let failures=0;
 function check(ok,label,help=''){console.log(`${ok?'[通过]':'[需处理]'} ${label}${ok?'':`。${help}`}`);if(!ok)failures++;}
-const [major,minor]=process.versions.node.split('.').map(Number);
-check(major>22 || major===22&&minor>=13,`Node.js ${process.versions.node}`,'请安装 Node.js 22.13 或更高版本');
+check(isSupportedNode(process.versions.node),`Node.js ${process.versions.node}`,NODE_REQUIREMENT);
 const pkg=JSON.parse(readFileSync(resolve(root,'package.json'),'utf8'));
 const missing=Object.keys({...pkg.dependencies,...pkg.devDependencies}).filter(name=>!existsSync(resolve(deps,name,'package.json')));
 check(!missing.length,missing.length?`缺少项目依赖：${missing.join('、')}`:'项目依赖齐全','在项目目录运行 npm ci --cache .npm-cache，或 npm run setup');

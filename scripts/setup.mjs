@@ -1,10 +1,10 @@
 import {spawnSync} from 'node:child_process';
+import {isSupportedNode, NODE_REQUIREMENT} from './node-version.mjs';
 import {dirname,resolve} from 'node:path';
 import {fileURLToPath} from 'node:url';
 process.chdir(resolve(dirname(fileURLToPath(import.meta.url)),'..'));
 if(process.argv.includes('--help')){console.log('用法：npm run setup。按锁文件安装项目依赖并安装测试浏览器；设置 PLAYWRIGHT_CHROMIUM_EXECUTABLE 可复用已有浏览器。只写项目依赖/缓存目录，不修改系统设置。');process.exit(0);}
-const [major,minor]=process.versions.node.split('.').map(Number);
-if(major<22 || major===22&&minor<13){console.error('需要 Node.js 22.13 或更高版本，请升级后重试。');process.exit(1);}
+if(!isSupportedNode(process.versions.node)){console.error(NODE_REQUIREMENT);process.exit(1);}
 const npmCli=process.env.npm_execpath;
 if(!npmCli){console.error('请通过 npm run setup 执行安装。');process.exit(1);}
 for(const args of [[npmCli,'ci','--cache','.npm-cache'],['scripts/install-browser.mjs']]){

@@ -1,0 +1,67 @@
+{
+  "project": "injection-theater",
+  "state": "PARTIAL",
+  "scenario": "Same synthetic meeting note, naive vs boundary-aware system prompts; labelled fixture outputs with real independent judging and exact trace export.",
+  "checks": [
+    {
+      "id": "typescript-and-production-build",
+      "passed": true,
+      "evidence": "artifacts/build.log"
+    },
+    {
+      "id": "9-unit-tests-including-network-boundary",
+      "passed": true,
+      "evidence": "artifacts/test.log"
+    },
+    {
+      "id": "4-browser-tests-real-fixture-api",
+      "passed": true,
+      "evidence": "artifacts/e2e.log"
+    },
+    {
+      "id": "recorded-demo-and-trace-export",
+      "passed": true,
+      "evidence": "artifacts/demo.log"
+    },
+    {
+      "id": "real-model-inference",
+      "passed": false,
+      "evidence": "Not run; no credentials accessed or supplied. Live transport covered only with explicit mocks."
+    }
+  ],
+  "commands": [
+    {
+      "cmd": "npm run build",
+      "exitCode": 0
+    },
+    {
+      "cmd": "npm run test",
+      "exitCode": 0
+    },
+    {
+      "cmd": "npm run e2e (initial; required browser absent)",
+      "exitCode": 1
+    },
+    {
+      "cmd": "npm run e2e (second; required FFmpeg absent)",
+      "exitCode": 1
+    },
+    {
+      "cmd": "npm run e2e (PLAYWRIGHT_CHROMIUM_EXECUTABLE points to existing Chromium)",
+      "exitCode": 0
+    },
+    {
+      "cmd": "npm run demo (PLAYWRIGHT_CHROMIUM_EXECUTABLE points to existing Chromium)",
+      "exitCode": 0
+    }
+  ],
+  "liveModel": false,
+  "fixturesUsed": true,
+  "demoVideo": "artifacts/playwright/demo/demo-three-click-local-inj-8d932-ith-inspectable-exact-trace/video.webm",
+  "limitations": [
+    "Live provider inference unverified; fixture responses are hand-authored and not evidence of defense efficacy.",
+    "Single synthetic document; exact marker and format checks do not evaluate semantic task correctness.",
+    "Browser download was interrupted after no progress. Final browser validation reused existing Chromium via environment override; matching FFmpeg downloaded locally.",
+    "No trace import or deterministic model replay; exported JSON preserves exact observed fixture outputs and prompts."
+  ]
+}

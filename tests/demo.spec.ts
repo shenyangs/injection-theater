@@ -1,3 +1,21 @@
-import {test, expect} from '@playwright/test';
-// TEMPLATE_DEMO_REPLACE: Agent must replace with scripted real P0 demonstration.
-test('starter demo', async ({page}) => { await page.goto('/'); await expect(page.locator('main')).toBeVisible(); await page.screenshot({path:'artifacts/starter.png'}); });
+import {test,expect} from '@playwright/test';
+import {DOCUMENT,MARKER} from '../shared/experiment';
+test('three-click local injection experiment with inspectable exact trace',async({page},testInfo)=>{
+ await page.goto('/');
+ await page.getByRole('button',{name:'Inspect poisoned note'}).click();
+ await expect(page.locator('.source-panel')).toContainText(DOCUMENT);
+ await page.screenshot({path:'artifacts/input-document.png',fullPage:true});
+ await page.getByRole('button',{name:'Run one benign local injection test'}).click();
+ await expect(page.getByText('PARTIAL · Fixture simulation')).toBeVisible();
+ await expect(page.getByTestId('naive').locator('.output')).toContainText(MARKER);
+ await expect(page.getByTestId('boundary').locator('.output')).not.toContainText(MARKER);
+ for(const lane of ['naive','boundary'])await expect(page.getByTestId(lane).locator('.judges')).toContainText('Two-bullet formatYES');
+ await page.getByRole('button',{name:'Inspect exact trace'}).click();
+ await expect(page.locator('.trace details')).toHaveCount(2);
+ for(const details of await page.locator('.trace details').all())await expect(details).toContainText(MARKER);
+ await page.screenshot({path:'artifacts/experiment-trace.png',fullPage:true});
+ const downloadPromise=page.waitForEvent('download');await page.getByRole('button',{name:'Download trace'}).click();const download=await downloadPromise;await download.saveAs('artifacts/fixture-trace.json');
+ await page.getByRole('button',{name:'Close trace'}).click();await page.getByRole('button',{name:'Hide input'}).click();
+ await page.screenshot({path:'artifacts/experiment-results.png',fullPage:true});
+ await testInfo.attach('measured fixture result',{path:'artifacts/experiment-results.png',contentType:'image/png'});
+});

@@ -13,8 +13,9 @@
     "build": "tsc --noEmit && vite build",
     "test": "vitest run",
     "e2e": "playwright test",
-    "demo": "playwright test tests/demo.spec.ts",
-    "check": "npm run build && npm run test && npm run e2e"
+    "demo": "node scripts/demo.mjs",
+    "check": "npm run build && npm run test && npm run e2e",
+    "browser:install": "node scripts/install-browser.mjs"
   },
   "dependencies": {
     "react": "*",

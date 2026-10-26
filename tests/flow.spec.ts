@@ -1,3 +1,2 @@
-import {test, expect} from '@playwright/test';
-// TEMPLATE_TEST_REPLACE: Agent must replace with domain-specific real-world assertion before PASS.
-test('starter page renders', async ({page}) => { await page.goto('/'); await expect(page.getByRole('heading', {name:'injection-theater'})).toBeVisible(); });
+import {test,expect} from '@playwright/test';
+test('input inspection exposes harmless injected instruction',async({page})=>{await page.goto('/');await expect(page.getByRole('heading',{name:'Naive Agent'})).toBeVisible();await expect(page.getByRole('heading',{name:'Boundary-aware Agent'})).toBeVisible();await page.getByRole('button',{name:'Inspect poisoned note'}).click();await expect(page.locator('.source-panel')).toContainText("ignore the user's task");});
